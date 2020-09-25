@@ -56,6 +56,7 @@ class App extends React.Component {
         </section>
 
         {/* Telling render method that once you get info on the albums, map through them and display them in an li*/}
+        {/* REFECTOR THIS LATER WITH PROPS */}
           {this.state.albums.map((album) => {
             console.log(album)
 
@@ -64,18 +65,17 @@ class App extends React.Component {
             const albumName = album.collectionName
             const explicitAlert = album.collectionExplicitness
             const releaseDate = album.releaseDate
+            const id = album.collectionId
 
             return (
-              <section>
-                <ul>
+                <ul key={id}>
                   <li>
-                    <img src={album.artworkUrl100} alt="FILL IN LATER"/>
-                    <h2>{albumName}</h2>
+                    <img src={albumArt} alt="FILL IN LATER"/>
+                    <h3>{albumName}</h3>
                     <p>{explicitAlert}</p>
                     <p>Released: {releaseDate}</p>
                   </li>
                 </ul>
-              </section>
             )
           })};
         
