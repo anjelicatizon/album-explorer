@@ -9,7 +9,7 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      album: {}
+      albums: []
     };
   };
 
@@ -27,11 +27,15 @@ class App extends React.Component {
         entity: "album"
       }
     }).then((res) => {
-        console.log(res.data.results)
         // albums is the array of the results returned from API
-        const albums = res.data.results
+        const albumsReturned = res.data.results
+        console.log(albumsReturned)
+
+        this.setState({
+          albums: albumsReturned
+        })
       });
-  };
+    }
   
 
   render() {
@@ -50,8 +54,31 @@ class App extends React.Component {
             </form>
           </div>
         </section>
-        
 
+        {/* Telling render method that once you get info on the albums, map through them and display them in an li*/}
+          {this.state.albums.map((album) => {
+            console.log(album)
+
+            const artistName = album.artistName
+            const albumArt = album.artworkUrl100
+            const albumName = album.collectionName
+            const explicitAlert = album.collectionExplicitness
+            const releaseDate = album.releaseDate
+
+            return (
+              <section>
+                <ul>
+                  <li>
+                    <img src={album.artworkUrl100} alt="FILL IN LATER"/>
+                    <h2>{albumName}</h2>
+                    <p>{explicitAlert}</p>
+                    <p>Released: {releaseDate}</p>
+                  </li>
+                </ul>
+              </section>
+            )
+          })};
+        
         {/* FOOTER */}
         <Footer />
       </div>
