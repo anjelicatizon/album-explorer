@@ -71,10 +71,11 @@ class App extends React.Component {
         // albums is the array of the results returned from API
         const albumsReturned = res.data.results
         console.log(albumsReturned)
-
-        this.setState({
+        
+        // Error handling if no results are returned
+        albumsReturned.length !== 0 ? this.setState({
           albums: albumsReturned
-        });
+        }) : alert("Sorry! We couldn't find an artist with that name. Please try another artist!");
       });
 
     // reset input field
@@ -86,7 +87,7 @@ class App extends React.Component {
   //Tracks Sort button
   handleSort = (album) => {
     console.log(album)
-    const sortedResults = [... album].sort()
+    const sortedResults = [...album].sort()
   }
 
   render() {
@@ -113,7 +114,7 @@ class App extends React.Component {
         {/* Telling render method that once you get info on the albums, map through them and display them in an li*/}
         {/* REFACTOR THIS LATER WITH PROPS & A COMPONENT */}
         {this.state.albums.map((album) => {
-          console.log(album)
+          // console.log(album)
 
           // Variables for specific pieces of info from the API
           const artistName = album.artistName
