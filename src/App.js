@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import axios from "axios";
 import Header from "./components/Header.js"
 import Footer from "./components/Footer.js"
@@ -6,6 +6,7 @@ import Footer from "./components/Footer.js"
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort } from '@fortawesome/free-solid-svg-icons'
+import Qs from 'qs'
 import "./App.css";
 
 class App extends React.Component {
@@ -18,31 +19,6 @@ class App extends React.Component {
       userInput: ''
     };
   };
-
-  // // USING COMPONENT DID MOUNT TO TEST API CALL BUT IT DOES NOT GO IN DID MOUNT FOR THE FINAL VERSION CUZ THERE WILL BE NO ALBUMS APPEARING ON LOAD
-  // componentDidMount(){
-  //   // API Call
-  //   // axios({
-  //   //   method: "GET",
-  //   //   url: "https://itunes.apple.com/search",
-  //   //   dataResponse: "JSON",
-  //   //   params: {
-  //   //     term: 'Fall Out Boy',
-  //   //     // term: this.state.userInput,
-  //   //     country: "CA",
-  //   //     media: "music",
-  //   //     entity: "album"
-  //   //   }
-  //   // }).then((res) => {
-  //   //     // albums is the array of the results returned from API
-  //   //     const albumsReturned = res.data.results
-  //   //     console.log(albumsReturned)
-
-  //   //     this.setState({
-  //   //       albums: albumsReturned
-  //   //     });
-  //   //   });
-  // }
   
   // EVENT LISTENERS
   // Tracks User's input in text box
@@ -56,19 +32,44 @@ class App extends React.Component {
   handleClick = (event) => {
     event.preventDefault();
 
+    // axios({
+    //   method: "GET",
+    //   url: "https://itunes.apple.com/search",
+    //   dataResponse: "JSON",
+    //   params: {
+    //     // term: 'Fall Out Boy',
+    //     term: this.state.userInput,
+    //     country: "CA",
+    //     media: "music",
+    //     entity: "album"
+    //   }
+    // }).then((res) => {
+    //     // albums is the array of the results returned from API
+    //     const albumsReturned = res.data.results
+    //     console.log(albumsReturned)
+        
+    //     // Error handling if no results are returned
+    //     albumsReturned.length !== 0 ? this.setState({
+    //       albums: albumsReturned
+    //     }) : alert("Sorry! We couldn't find an artist with that name. Please try another artist!");
+    //   });
     axios({
-      method: "GET",
-      url: "https://itunes.apple.com/search",
-      dataResponse: "JSON",
+      url: 'https://proxy.hackeryou.com',
+      responseType:'json',
+      paramsSerializer: function(params) {
+        return Qs.stringify(params, {arrayFormat: 'brackets'})
+      },
       params: {
-        // term: 'Fall Out Boy',
-        term: this.state.userInput,
-        country: "CA",
-        media: "music",
-        entity: "album"
+        reqUrl: 'https://itunes.apple.com/search',
+        params: {
+          term: this.state.userInput,
+          country: 'CA',
+          media: "music",
+          entity: "album"
+        }, 
+        xmlToJSON: false
       }
-    }).then((res) => {
-        // albums is the array of the results returned from API
+      }).then((res) => {
         const albumsReturned = res.data.results
         console.log(albumsReturned)
         
@@ -85,9 +86,13 @@ class App extends React.Component {
   }
 
   //Tracks Sort button
-  handleSort = (album) => {
-    console.log(album)
-    const sortedResults = [...album].sort()
+  handleSort = (event) => {
+    console.log(event)
+
+    // this.setState({
+    //   albums: albumsReturned
+    // })
+    // // const sortedResults = [...album].sort()
   }
 
   render() {
@@ -101,46 +106,44 @@ class App extends React.Component {
           <div className="wrapper">
             <form action="submit">
               <label htmlFor="search-bar">Type in an artist to discover their entire discography</label>
-              <input type="text" id="newAlbum" className="search-bar" onChange={this.handleChange} value={this.state.userInput}/>
+              <input type="text" id="newAlbum" className="search-bar" onChange={this.handleChange} value={this.state.userInput} placeholder="type in an artist"/>
               <input type="submit" className="submit" value="Go" onClick={this.handleClick}/>
             </form>
-
-            {/* Sort Button */}
-            <button className="sort" onClick={this.handleSort}>Sort <FontAwesomeIcon icon={faSort} /></button>
           </div>
         </section>
 
         {/* RESULTS/ALBUM SECTION */}
         {/* Telling render method that once you get info on the albums, map through them and display them in an li*/}
-        {/* REFACTOR THIS LATER WITH PROPS & A COMPONENT */}
-        {this.state.albums.map((album) => {
-          // console.log(album)
+        <section>
+          <div className="wrapper">
 
-          // Variables for specific pieces of info from the API
-          const artistName = album.artistName
-          const albumArt = album.artworkUrl100
-          const albumName = album.collectionName
-          const explicitAlert = album.collectionExplicitness
-          const releaseDate = album.releaseDate
-          const id = album.collectionId
+            {/* Sort Button */}
+            <button className="sort" onClick={this.handleSort}>Sort <FontAwesomeIcon icon={faSort} /></button>
 
-          return (
-              <section className="wrapper">
-                
-                {/* Album results */}
-                <ul key={id}>
-                  
-                  <li>
-                    <img src={albumArt} alt="Album artwork"/>
-                    <h3>{albumName}</h3>
-                    <p>{explicitAlert}</p>
-                    <p>Released: {releaseDate.slice(0,10)}</p>
-                  </li>
-                </ul>
+            <ul>
+            {this.state.albums.map((album) => {
+              // console.log(album)
 
-              </section>
-          )
-        })};
+              // Variables for specific pieces of info from the API
+              const artistName = album.artistName
+              const albumArt = album.artworkUrl100
+              const albumName = album.collectionName
+              const explicitAlert = album.collectionExplicitness
+              const releaseDate = album.releaseDate
+              const id = album.collectionId
+
+              return (
+                <li key={id}>
+                  <img src={albumArt} alt="Album artwork"/>
+                  <h3>{albumName}</h3>
+                  <p>{explicitAlert}</p>
+                  <p>Released: {releaseDate.slice(0,10)}</p>
+                </li>
+              )
+            })}
+            </ul>
+          </div>
+        </section>
         
         {/* FOOTER */}
         <Footer />
