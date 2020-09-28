@@ -32,27 +32,7 @@ class App extends React.Component {
   handleClick = (event) => {
     event.preventDefault();
 
-    // axios({
-    //   method: "GET",
-    //   url: "https://itunes.apple.com/search",
-    //   dataResponse: "JSON",
-    //   params: {
-    //     // term: 'Fall Out Boy',
-    //     term: this.state.userInput,
-    //     country: "CA",
-    //     media: "music",
-    //     entity: "album"
-    //   }
-    // }).then((res) => {
-    //     // albums is the array of the results returned from API
-    //     const albumsReturned = res.data.results
-    //     console.log(albumsReturned)
-        
-    //     // Error handling if no results are returned
-    //     albumsReturned.length !== 0 ? this.setState({
-    //       albums: albumsReturned
-    //     }) : alert("Sorry! We couldn't find an artist with that name. Please try another artist!");
-    //   });
+    // Axios call using Juno proxy server
     axios({
       url: 'https://proxy.hackeryou.com',
       responseType:'json',
@@ -63,7 +43,7 @@ class App extends React.Component {
         reqUrl: 'https://itunes.apple.com/search',
         params: {
           term: this.state.userInput,
-          country: 'CA',
+          country: "CA",
           media: "music",
           entity: "album"
         }, 
@@ -84,15 +64,16 @@ class App extends React.Component {
       userInput: ''
     })
   }
-
+  
   //Tracks Sort button
-  handleSort = (event) => {
-    console.log(event)
+  handleSort = () => {
+    const sortedList = this.state.albums.sort((a, b) => Date.parse(b.releaseDate) - Date.parse(a.releaseDate))
 
-    // this.setState({
-    //   albums: albumsReturned
-    // })
-    // // const sortedResults = [...album].sort()
+    console.log(sortedList)
+
+    this.setState({
+      albums: sortedList
+    })
   }
 
   render() {
