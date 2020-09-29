@@ -5,7 +5,7 @@ import Footer from "./components/Footer.js"
 // Font Awesome - CAN MAKE A COMPONENT LATER
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSort } from '@fortawesome/free-solid-svg-icons'
+import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
 import Qs from 'qs'
 import "./App.css";
 
@@ -65,16 +65,25 @@ class App extends React.Component {
     })
   }
   
-  //Tracks Sort button
-  handleSort = () => {
-    const sortedList = this.state.albums.sort((a, b) => Date.parse(b.releaseDate) - Date.parse(a.releaseDate))
+  //Tracks Sort button - Descending
+  handleSortDesc = () => {
+    const sortedDescList = this.state.albums.sort((a, b) => Date.parse(b.releaseDate) - Date.parse(a.releaseDate))
 
-    console.log(sortedList)
+    console.log(sortedDescList)
 
     this.setState({
-      albums: sortedList
+      albums: sortedDescList
     })
-  }
+  };
+
+  //Tracks Sort button - Ascending
+  handleSortAsc = () => {
+    const sortedAscList = this.state.albums.sort((a, b) => Date.parse(a.releaseDate) - Date.parse(b.releaseDate))
+
+    this.setState({
+      albums: sortedAscList
+    })
+  };
 
   render() {
     return (
@@ -98,13 +107,15 @@ class App extends React.Component {
         <section>
           <div className="wrapper">
 
-            {/* Sort Button */}
-            <button className="sort" onClick={this.handleSort}>Sort <FontAwesomeIcon icon={faSort} /></button>
+            {/* Sort Descending Button */}
+            <button className="sort" onClick={this.handleSortDesc}>Sort (newest to oldest) <FontAwesomeIcon icon={faSortDown} /></button>
+
+            {/* Sort Ascending Button */}
+            <button className="sort" onClick={this.handleSortAsc}>Sort (oldest to newest) <FontAwesomeIcon icon={faSortUp} /></button>
 
             <ul>
             {this.state.albums.map((album) => {
               // console.log(album)
-
               // Variables for specific pieces of info from the API
               const artistName = album.artistName
               const albumArt = album.artworkUrl100
@@ -115,10 +126,12 @@ class App extends React.Component {
 
               return (
                 <li key={id}>
-                  <img src={albumArt} alt="Album artwork"/>
-                  <h3>{albumName}</h3>
-                  <p>{explicitAlert}</p>
-                  <p>Released: {releaseDate.slice(0,10)}</p>
+                  <div className="albumContainer">
+                    <img src={albumArt} alt="Album artwork"/>
+                    <h3>{albumName}</h3>
+                    <p>{explicitAlert}</p>
+                    <p>Released: {releaseDate.slice(0,10)}</p>
+                  </div>
                 </li>
               )
             })}
