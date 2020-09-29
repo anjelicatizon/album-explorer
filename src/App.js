@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import Header from "./components/Header.js"
 import Footer from "./components/Footer.js"
+// import AlbumCard from "./components/AlbumCard.js"
 // Font Awesome - CAN MAKE A COMPONENT LATER
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -51,12 +52,31 @@ class App extends React.Component {
       }
       }).then((res) => {
         const albumsReturned = res.data.results
-        console.log(albumsReturned)
-        
+
+        // Images returned from the API are only 100x100 - the img URL ends with .../100x100.jpg
+        // Change the URL to be .../500x500.jpg so photos are larger
+        albumsReturned.map( (coverArt) => {
+          const oldString = coverArt.artworkUrl100;
+          // console.log(oldString)
+          const newString = oldString.replace("100x100bb.jpg", "500x500bb.jpg");
+          // console.log(newString)
+          coverArt.artworkUrl100 = newString
+        } )
+
+        // Explicit vs not-explicit returned from API is not formatted in a render-friendly way
+        // Change the value to be "Explicit"
+        albumsReturned.map( (coverArt) => {
+          const oldSfwString = coverArt.collectionExplicitness;
+          const newSfwString = oldSfwString.replace("notExplicit", "Not Explicit")
+          coverArt.collectionExplicitness = newSfwString
+        })
+
         // Error handling if no results are returned
         albumsReturned.length !== 0 ? this.setState({
           albums: albumsReturned
         }) : alert("Sorry! We couldn't find an artist with that name. Please try another artist!");
+
+        console.log(albumsReturned)
       });
 
     // reset input field
@@ -84,6 +104,11 @@ class App extends React.Component {
       albums: sortedAscList
     })
   };
+
+  // Modal Event Listener
+  handleModal = () => {
+    
+  } 
 
   render() {
     return (
@@ -125,11 +150,12 @@ class App extends React.Component {
               const id = album.collectionId
 
               return (
-                <li key={id}>
+                <li key={id} className="albumCard" onClick={this.handleModal}>
                   <div className="albumContainer">
                     <img src={albumArt} alt="Album artwork"/>
                     <h3>{albumName}</h3>
-                    <p>{explicitAlert}</p>
+                    {/* Making the first letter uppercase */}
+                    <p> {explicitAlert.charAt(0).toUpperCase() + explicitAlert.slice(1)}</p>
                     <p>Released: {releaseDate.slice(0,10)}</p>
                   </div>
                 </li>
@@ -139,7 +165,6 @@ class App extends React.Component {
           </div>
         </section>
         
-        {/* FOOTER */}
         <Footer />
       </div>
     );
