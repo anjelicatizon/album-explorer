@@ -1,7 +1,8 @@
 import React from "react";
 import axios from "axios";
-import Header from "./components/Header.js"
-import Footer from "./components/Footer.js"
+import Header from "./components/Header.js";
+import Footer from "./components/Footer.js";
+import Form from "./components/Form.js"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
@@ -16,7 +17,8 @@ class App extends React.Component {
     super();
     this.state = {
       albums: [],
-      userInput: ''
+      userInput: '',
+      displayedBand: ''
     };
   };
   
@@ -26,10 +28,10 @@ class App extends React.Component {
     this.setState({
       userInput: event.target.value
     });
-  };
+  }
 
   // Action when user clicks submit on form
-  handleClick = (event) => {
+  getResults = (event) => {
     event.preventDefault();
 
     // Axios call using Juno proxy server
@@ -50,40 +52,57 @@ class App extends React.Component {
         xmlToJSON: false
       }
       }).then((res) => {
-        const albumsReturned = res.data.results
+          console.log(res)
 
-        // Images returned from the API are only 100x100 - the img URL ends with .../100x100.jpg
-        // Change the URL to be .../500x500.jpg so photos are larger
-        albumsReturned.map( (coverArt) => {
-          const oldString = coverArt.artworkUrl100;
-          // console.log(oldString)
-          const newString = oldString.replace("100x100bb.jpg", "500x500bb.jpg");
-          // console.log(newString)
-          coverArt.artworkUrl100 = newString
-        } )
+          // Taking the user's input and saving it in a variable
+            // Pushing this to displayedBand in state so we can render it
+          const displayedBand = this.state.userInput
+          this.setState({
+            displayedBand
+          })
+          
 
-        // Explicit vs not-explicit returned from API is not formatted in a render-friendly way
-        // Change the value to be "Explicit"
-        albumsReturned.map( (coverArt) => {
-          const oldSfwString = coverArt.collectionExplicitness;
-          const newSfwString = oldSfwString.replace("notExplicit", "not explicit")
-          coverArt.collectionExplicitness = newSfwString
+          const albumsReturned = res.data.results
+
+          // Images returned from the API are only 100x100 - the img URL ends with .../100x100.jpg
+          // Change the URL to be .../500x500.jpg so photos are larger
+          albumsReturned.map( (coverArt) => {
+            const oldString = coverArt.artworkUrl100;
+            // console.log(oldString)
+            const newString = oldString.replace("100x100bb.jpg", "500x500bb.jpg");
+            // console.log(newString)
+            coverArt.artworkUrl100 = newString
+          } )
+
+          // console.log(albumsReturned)
+
+          // Explicit vs not-explicit returned from API is not formatted in a render-friendly way
+          // Change the value to be "Explicit"
+          albumsReturned.map( (coverArt) => {
+            const oldSfwString = coverArt.collectionExplicitness;
+            const newSfwString = oldSfwString.replace("notExplicit", "not explicit")
+            coverArt.collectionExplicitness = newSfwString
+          })
+
+          // Error handling if no results are returned
+          albumsReturned.length !== 0 
+          ? 
+          this.setState({
+            albums: albumsReturned,
+            // userInput: ''
+          }) 
+          : 
+          alert("Sorry! We couldn't find an artist with that name. Please try another artist!");
+
+           // // reset input field
+           this.setState({
+            userInput: ''
+          })
+
         })
 
-        // Error handling if no results are returned
-        albumsReturned.length !== 0 ? this.setState({
-          albums: albumsReturned
-        }) : alert("Sorry! We couldn't find an artist with that name. Please try another artist!");
-
-        console.log(albumsReturned)
-      });
-
-    // reset input field
-    this.setState({
-      userInput: ''
-    })
   }
-  
+
   //Tracks Sort button - Descending
   handleSortDesc = () => {
 
@@ -118,16 +137,12 @@ class App extends React.Component {
         {/* HEADER */}
         <Header />
 
-        {/* FORM */}
-        <section>
-          <div className="wrapper">
-            <form action="submit">
-              <label htmlFor="search-bar">Type in an artist to discover their entire discography</label>
-              <input type="text" id="newAlbum" className="search-bar" onChange={this.handleChange} value={this.state.userInput} placeholder="search for an artist"/>
-              <input type="submit" className="submit" value="search" onClick={this.handleClick}/>
-            </form>
-          </div>
-        </section>
+        {/* FORM - in component */}
+        <Form 
+          handleClick={this.getResults}
+          handleChange={this.handleChange}
+          userValue={this.state.userInput}
+        />
 
         {/* RESULTS/ALBUM SECTION */}
         {/* Telling render method that once you get info on the albums, map through them and display them in an li*/}
@@ -140,11 +155,14 @@ class App extends React.Component {
             {/* Sort Ascending Button */}
             <button className="sort" onClick={this.handleSortAsc}>Sort (oldest to newest) <FontAwesomeIcon icon={faSortUp} /></button>
 
+            {/* Displaying name of band user has inputted */}
+            <h2>{this.state.displayedBand}</h2>
+
             <ul>
             {this.state.albums.map((album) => {
               // console.log(album)
+              
               // Variables for specific pieces of info from the API
-              const artistName = album.artistName
               const albumArt = album.artworkUrl100
               const albumName = album.collectionName
               const explicitAlert = album.collectionExplicitness
