@@ -2,11 +2,10 @@ import React from "react";
 import axios from "axios";
 import Header from "./components/Header.js"
 import Footer from "./components/Footer.js"
-// import AlbumCard from "./components/AlbumCard.js"
-// Font Awesome - CAN MAKE A COMPONENT LATER
-import ReactDOM from 'react-dom'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
+import { faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
+import { faApple } from "@fortawesome/free-brands-svg-icons";
 import Qs from 'qs'
 import "./App.css";
 
@@ -67,7 +66,7 @@ class App extends React.Component {
         // Change the value to be "Explicit"
         albumsReturned.map( (coverArt) => {
           const oldSfwString = coverArt.collectionExplicitness;
-          const newSfwString = oldSfwString.replace("notExplicit", "Not Explicit")
+          const newSfwString = oldSfwString.replace("notExplicit", "not explicit")
           coverArt.collectionExplicitness = newSfwString
         })
 
@@ -87,7 +86,11 @@ class App extends React.Component {
   
   //Tracks Sort button - Descending
   handleSortDesc = () => {
-    const sortedDescList = this.state.albums.sort((a, b) => Date.parse(b.releaseDate) - Date.parse(a.releaseDate))
+
+    // Creating a copy of state to not mutate it
+    const updatedDescList = [...this.state.albums]
+
+    const sortedDescList = updatedDescList.sort((a, b) => Date.parse(b.releaseDate) - Date.parse(a.releaseDate))
 
     console.log(sortedDescList)
 
@@ -98,17 +101,16 @@ class App extends React.Component {
 
   //Tracks Sort button - Ascending
   handleSortAsc = () => {
-    const sortedAscList = this.state.albums.sort((a, b) => Date.parse(a.releaseDate) - Date.parse(b.releaseDate))
+
+    // Create a copy of state to not mutate it
+    const updatedAscList = [...this.state.albums]
+
+    const sortedAscList = updatedAscList.sort((a, b) => Date.parse(a.releaseDate) - Date.parse(b.releaseDate))
 
     this.setState({
       albums: sortedAscList
     })
   };
-
-  // Modal Event Listener
-  handleModal = () => {
-    
-  } 
 
   render() {
     return (
@@ -121,8 +123,8 @@ class App extends React.Component {
           <div className="wrapper">
             <form action="submit">
               <label htmlFor="search-bar">Type in an artist to discover their entire discography</label>
-              <input type="text" id="newAlbum" className="search-bar" onChange={this.handleChange} value={this.state.userInput} placeholder="type in an artist"/>
-              <input type="submit" className="submit" value="Go" onClick={this.handleClick}/>
+              <input type="text" id="newAlbum" className="search-bar" onChange={this.handleChange} value={this.state.userInput} placeholder="search for an artist"/>
+              <input type="submit" className="submit" value="search" onClick={this.handleClick}/>
             </form>
           </div>
         </section>
@@ -148,15 +150,22 @@ class App extends React.Component {
               const explicitAlert = album.collectionExplicitness
               const releaseDate = album.releaseDate
               const id = album.collectionId
+              const url = album.collectionViewUrl
 
               return (
                 <li key={id} className="albumCard" onClick={this.handleModal}>
                   <div className="albumContainer">
+                    
                     <img src={albumArt} alt="Album artwork"/>
+
                     <h3>{albumName}</h3>
-                    {/* Making the first letter uppercase */}
-                    <p> {explicitAlert.charAt(0).toUpperCase() + explicitAlert.slice(1)}</p>
-                    <p>Released: {releaseDate.slice(0,10)}</p>
+
+                    {/* Changing style if SFW vs. NSFW */}
+                    { explicitAlert === 'explicit' ? <p className="explicit">{explicitAlert}</p> : <p className="notExplicit">{explicitAlert}</p>}
+                    <p>Release Date: {releaseDate.slice(0,10)}</p>
+
+                    <a href={url}><FontAwesomeIcon icon={faApple} /> Listen on Apple Music</a>
+
                   </div>
                 </li>
               )
