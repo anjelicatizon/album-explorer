@@ -1,7 +1,8 @@
 import React from "react";
 import axios from "axios";
-import Header from "./components/Header.js"
-import Footer from "./components/Footer.js"
+import Header from "./components/Header.js";
+import Footer from "./components/Footer.js";
+import Form from "./components/Form.js"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
@@ -15,21 +16,14 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      albums: [],
-      userInput: ''
+      albums: []
     };
   };
   
   // EVENT LISTENERS
-  // Tracks User's input in text box
-  handleChange = (event) => {
-    this.setState({
-      userInput: event.target.value
-    });
-  };
 
   // Action when user clicks submit on form
-  handleClick = (event) => {
+  handleClick = (event, userInput) => {
     event.preventDefault();
 
     // Axios call using Juno proxy server
@@ -42,7 +36,7 @@ class App extends React.Component {
       params: {
         reqUrl: 'https://itunes.apple.com/search',
         params: {
-          term: this.state.userInput,
+          term: userInput,
           country: "CA",
           media: "music",
           entity: "album"
@@ -118,16 +112,8 @@ class App extends React.Component {
         {/* HEADER */}
         <Header />
 
-        {/* FORM */}
-        <section>
-          <div className="wrapper">
-            <form action="submit">
-              <label htmlFor="search-bar">Type in an artist to discover their entire discography</label>
-              <input type="text" id="newAlbum" className="search-bar" onChange={this.handleChange} value={this.state.userInput} placeholder="search for an artist"/>
-              <input type="submit" className="submit" value="search" onClick={this.handleClick}/>
-            </form>
-          </div>
-        </section>
+        {/* FORM - in component */}
+        <Form handleClick={this.handleClick}/>
 
         {/* RESULTS/ALBUM SECTION */}
         {/* Telling render method that once you get info on the albums, map through them and display them in an li*/}
@@ -143,6 +129,7 @@ class App extends React.Component {
             <ul>
             {this.state.albums.map((album) => {
               // console.log(album)
+              
               // Variables for specific pieces of info from the API
               const artistName = album.artistName
               const albumArt = album.artworkUrl100
