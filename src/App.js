@@ -16,14 +16,21 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      albums: []
+      albums: [],
+      userInput: ''
     };
   };
   
   // EVENT LISTENERS
+  // Tracks User's input in text box
+  handleChange = (event) => {
+    this.setState({
+      userInput: event.target.value
+    });
+  }
 
   // Action when user clicks submit on form
-  handleClick = (event, userInput) => {
+  getResults = (event, userInput) => {
     event.preventDefault();
 
     // Axios call using Juno proxy server
@@ -70,14 +77,15 @@ class App extends React.Component {
         }) : alert("Sorry! We couldn't find an artist with that name. Please try another artist!");
 
         console.log(albumsReturned)
+
       });
 
-    // reset input field
-    this.setState({
-      userInput: ''
-    })
+      // // reset input field
+      this.setState({
+        userInput: ''
+      })
   }
-  
+
   //Tracks Sort button - Descending
   handleSortDesc = () => {
 
@@ -113,7 +121,10 @@ class App extends React.Component {
         <Header />
 
         {/* FORM - in component */}
-        <Form handleClick={this.handleClick}/>
+        <Form 
+          handleClick={this.getResults}
+          handleChange={this.handleChange}
+        />
 
         {/* RESULTS/ALBUM SECTION */}
         {/* Telling render method that once you get info on the albums, map through them and display them in an li*/}
@@ -131,7 +142,6 @@ class App extends React.Component {
               // console.log(album)
               
               // Variables for specific pieces of info from the API
-              const artistName = album.artistName
               const albumArt = album.artworkUrl100
               const albumName = album.collectionName
               const explicitAlert = album.collectionExplicitness
