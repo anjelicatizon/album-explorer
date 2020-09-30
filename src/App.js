@@ -17,7 +17,8 @@ class App extends React.Component {
     super();
     this.state = {
       albums: [],
-      userInput: ''
+      userInput: '',
+      displayedBand: ''
     };
   };
   
@@ -30,7 +31,7 @@ class App extends React.Component {
   }
 
   // Action when user clicks submit on form
-  getResults = (event, userInput) => {
+  getResults = (event) => {
     event.preventDefault();
 
     // Axios call using Juno proxy server
@@ -43,7 +44,7 @@ class App extends React.Component {
       params: {
         reqUrl: 'https://itunes.apple.com/search',
         params: {
-          term: userInput,
+          term: this.state.userInput,
           country: "CA",
           media: "music",
           entity: "album"
@@ -51,39 +52,55 @@ class App extends React.Component {
         xmlToJSON: false
       }
       }).then((res) => {
-        const albumsReturned = res.data.results
+          console.log(res)
 
-        // Images returned from the API are only 100x100 - the img URL ends with .../100x100.jpg
-        // Change the URL to be .../500x500.jpg so photos are larger
-        albumsReturned.map( (coverArt) => {
-          const oldString = coverArt.artworkUrl100;
-          // console.log(oldString)
-          const newString = oldString.replace("100x100bb.jpg", "500x500bb.jpg");
-          // console.log(newString)
-          coverArt.artworkUrl100 = newString
-        } )
+          // Taking the user's input and saving it in a variable
+            // Pushing this to displayedBand in state so we can render it
+          const displayedBand = this.state.userInput
+          this.setState({
+            displayedBand
+          })
+          
 
-        // Explicit vs not-explicit returned from API is not formatted in a render-friendly way
-        // Change the value to be "Explicit"
-        albumsReturned.map( (coverArt) => {
-          const oldSfwString = coverArt.collectionExplicitness;
-          const newSfwString = oldSfwString.replace("notExplicit", "not explicit")
-          coverArt.collectionExplicitness = newSfwString
+          const albumsReturned = res.data.results
+
+          // Images returned from the API are only 100x100 - the img URL ends with .../100x100.jpg
+          // Change the URL to be .../500x500.jpg so photos are larger
+          albumsReturned.map( (coverArt) => {
+            const oldString = coverArt.artworkUrl100;
+            // console.log(oldString)
+            const newString = oldString.replace("100x100bb.jpg", "500x500bb.jpg");
+            // console.log(newString)
+            coverArt.artworkUrl100 = newString
+          } )
+
+          // console.log(albumsReturned)
+
+          // Explicit vs not-explicit returned from API is not formatted in a render-friendly way
+          // Change the value to be "Explicit"
+          albumsReturned.map( (coverArt) => {
+            const oldSfwString = coverArt.collectionExplicitness;
+            const newSfwString = oldSfwString.replace("notExplicit", "not explicit")
+            coverArt.collectionExplicitness = newSfwString
+          })
+
+          // Error handling if no results are returned
+          albumsReturned.length !== 0 
+          ? 
+          this.setState({
+            albums: albumsReturned,
+            // userInput: ''
+          }) 
+          : 
+          alert("Sorry! We couldn't find an artist with that name. Please try another artist!");
+
+           // // reset input field
+           this.setState({
+            userInput: ''
+          })
+
         })
 
-        // Error handling if no results are returned
-        albumsReturned.length !== 0 ? this.setState({
-          albums: albumsReturned
-        }) : alert("Sorry! We couldn't find an artist with that name. Please try another artist!");
-
-        console.log(albumsReturned)
-
-      });
-
-      // // reset input field
-      this.setState({
-        userInput: ''
-      })
   }
 
   //Tracks Sort button - Descending
@@ -124,6 +141,7 @@ class App extends React.Component {
         <Form 
           handleClick={this.getResults}
           handleChange={this.handleChange}
+          userValue={this.state.userInput}
         />
 
         {/* RESULTS/ALBUM SECTION */}
@@ -136,6 +154,9 @@ class App extends React.Component {
 
             {/* Sort Ascending Button */}
             <button className="sort" onClick={this.handleSortAsc}>Sort (oldest to newest) <FontAwesomeIcon icon={faSortUp} /></button>
+
+            {/* Displaying name of band user has inputted */}
+            <h2>{this.state.displayedBand}</h2>
 
             <ul>
             {this.state.albums.map((album) => {
