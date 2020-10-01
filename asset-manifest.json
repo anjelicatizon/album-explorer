@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/album-explorer/static/css/main.7ba92244.chunk.css",
+    "main.css": "/album-explorer/static/css/main.594cf58d.chunk.css",
     "main.js": "/album-explorer/static/js/main.81a54c1f.chunk.js",
     "main.js.map": "/album-explorer/static/js/main.81a54c1f.chunk.js.map",
     "runtime-main.js": "/album-explorer/static/js/runtime-main.2198d566.js",
@@ -8,15 +8,15 @@
     "static/js/2.b8ea5368.chunk.js": "/album-explorer/static/js/2.b8ea5368.chunk.js",
     "static/js/2.b8ea5368.chunk.js.map": "/album-explorer/static/js/2.b8ea5368.chunk.js.map",
     "index.html": "/album-explorer/index.html",
-    "precache-manifest.9cfbdef969131457366db2dbd4114842.js": "/album-explorer/precache-manifest.9cfbdef969131457366db2dbd4114842.js",
+    "precache-manifest.4a9b03e14e3453bed05851de976db7f5.js": "/album-explorer/precache-manifest.4a9b03e14e3453bed05851de976db7f5.js",
     "service-worker.js": "/album-explorer/service-worker.js",
-    "static/css/main.7ba92244.chunk.css.map": "/album-explorer/static/css/main.7ba92244.chunk.css.map",
+    "static/css/main.594cf58d.chunk.css.map": "/album-explorer/static/css/main.594cf58d.chunk.css.map",
     "static/js/2.b8ea5368.chunk.js.LICENSE.txt": "/album-explorer/static/js/2.b8ea5368.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.2198d566.js",
     "static/js/2.b8ea5368.chunk.js",
-    "static/css/main.7ba92244.chunk.css",
+    "static/css/main.594cf58d.chunk.css",
     "static/js/main.81a54c1f.chunk.js"
   ]
 }
