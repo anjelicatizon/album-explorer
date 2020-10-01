@@ -270,7 +270,7 @@ footer a {
   .socialIcons {
     flex-direction: column;
     align-items: flex-end;
-    margin-top: 3%;
+    margin-top: 5%;
   }
 
   .socialIcons a {

@@ -1,14 +1,14 @@
-import React from 'react';
+import React from "react";
 
 const Form = (props) => {
 
-    const { handleClick, handleChange, userValue } = props
+    const { handleClick, handleChange, userValue } = props;
 
     return(
         <section>
             <div className="wrapper">
                 <form action="submit">
-                    <label htmlFor="search-bar">Type in an artist to discover their entire discography</label>
+                    <label htmlFor="searchBar">Type in an artist to discover their entire discography</label>
 
                     <input
                     type="text"
@@ -24,7 +24,7 @@ const Form = (props) => {
                 </form>
             </div>
         </section>
-    )
-}
+    );
+};
 
 export default Form;
