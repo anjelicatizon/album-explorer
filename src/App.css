@@ -43,7 +43,7 @@ img {
 h1 {
   font-weight: 300;
   font-size: 4rem;
-  margin: 2% 0;
+  margin: 3% 0;
 }
 
 .headerContainer {
@@ -83,7 +83,7 @@ form {
 label {
   font-family: 'Lusitana', serif;
   font-size: 1.5rem;
-  margin: 1% 0;
+  margin: 2% 0;
 }
 
 input[type=text] {
@@ -93,7 +93,7 @@ input[type=text] {
   outline: 0;
   font-size: 1.3rem;
   padding: 2% 0;
-  margin: 2% 0;
+  margin: 3% 0;
   background-color: #d9d9d9;
 }
 
@@ -122,11 +122,11 @@ input[type=submit]:focus {
 /*********************/
 
 button {
-  margin: 2% 0;
+  margin: 3% 0;
   border: none;
   background-color: transparent;
   color: gray;
-  padding: 1%;
+  padding: 2% 2% 0 0;
 }
 
 button:hover,
@@ -136,7 +136,7 @@ button:focus {
 
 h2 {
   font-size: 2.5rem;
-  margin: 2% 0;
+  margin: 3% 0;
 }
 
 ul {
@@ -171,19 +171,22 @@ h3 {
 
 p {
   font-family: 'Lusitana', serif;
+  font-size: 1rem;
   padding: 1% 0;
+  margin: 1%;
+  text-align: center;
 }
 
 .explicit {
   background-color: rgb(247, 91, 91);
-  padding: 1% 3%;
+  padding: 1% 4%;
   border-radius: 10px;
   margin: 2% 0;
 }
 
 .notExplicit {
   background-color: rgb(79, 155, 116);
-  padding: 1% 3%;
+  padding: 1% 4%;
   margin: 2% 0;
   border-radius: 60px;
   background: #4f9b74;
@@ -224,4 +227,62 @@ footer p {
 
 footer a {
   color: white;
+}
+
+/*********************/
+/*   MEDIA QUERIES   */
+/*********************/
+
+@media (max-width: 880px) {
+
+  li {
+    width: calc(50% - 2%);
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+}
+
+@media (max-width: 760px) {
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  label {
+    font-size: 1.2rem;
+  }
+
+  input[type=text] {
+    font-size: 1rem;
+  }
+
+}
+
+@media (max-width: 575px) {
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .socialIcons {
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 3%;
+  }
+
+  .socialIcons a {
+    font-size: 1rem;
+  }
+
+  label {
+    font-size: 1.2rem;
+  }
+
+  li {
+    width: 100%;
+  }
+  
 }

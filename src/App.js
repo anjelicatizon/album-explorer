@@ -146,7 +146,7 @@ class App extends React.Component {
 
         {/* RESULTS/ALBUM SECTION */}
         {/* Telling render method that once you get info on the albums, map through them and display them in an li*/}
-        <section>
+        <section className="results">
           <div className="wrapper">
 
             {/* Sort Descending Button */}
