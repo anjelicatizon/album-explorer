@@ -181,8 +181,8 @@ class App extends React.Component {
 
                   </div>
                 </li>
-              );
-            })};
+              )
+            })}
             </ul>
           </div>
         </section>
